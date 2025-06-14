@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const mysql = require("mysql2/promise");
 const path = require("path");
 const fs = require("fs");
 require('dotenv').config();
@@ -17,8 +16,17 @@ const networkRoutes = require('./routes/network');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Database pool
-const pool = require('./db');
+// Επιλογή του κατάλληλου pool ανάλογα με το περιβάλλον
+let pool;
+if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
+  // Χρήση PostgreSQL στο Render
+  pool = require('./db-pg');
+  console.log('Using PostgreSQL database');
+} else {
+  // Χρήση MySQL τοπικά
+  pool = require('./db');
+  console.log('Using MySQL database');
+}
 
 // Middleware
 app.use(cors({
