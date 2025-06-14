@@ -11,7 +11,7 @@ async function initDb() {
     
     // Επιλογή του κατάλληλου pool ανάλογα με το περιβάλλον
     let pool;
-    if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
+    if (process.env.NODE_ENV === 'production') {
       // Χρήση PostgreSQL στο Render
       pool = require('./db-pg');
       console.log('Using PostgreSQL for initialization');
@@ -32,7 +32,7 @@ async function initDb() {
       if (command.trim()) {
         // Προσαρμογή του SQL για PostgreSQL αν είμαστε σε περιβάλλον παραγωγής
         let sqlCommand = command;
-        if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
+        if (process.env.NODE_ENV === 'production') {
           // Αντικατάσταση MySQL-specific syntax με PostgreSQL syntax
           sqlCommand = sqlCommand
             .replace(/AUTO_INCREMENT/g, 'SERIAL')

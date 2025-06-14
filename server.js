@@ -18,7 +18,7 @@ const PORT = process.env.PORT || 5000;
 
 // Επιλογή του κατάλληλου pool ανάλογα με το περιβάλλον
 let pool;
-if (process.env.NODE_ENV === 'production' && process.env.DATABASE_URL) {
+if (process.env.NODE_ENV === 'production') {
   // Χρήση PostgreSQL στο Render
   pool = require('./db-pg');
   console.log('Using PostgreSQL database');
