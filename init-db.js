@@ -35,11 +35,17 @@ async function initDb() {
         if (process.env.NODE_ENV === 'production') {
           // Αντικατάσταση MySQL-specific syntax με PostgreSQL syntax
           sqlCommand = sqlCommand
-            .replace(/AUTO_INCREMENT/g, 'SERIAL')
             .replace(/`/g, '"')
+            .replace(/INT\s+AUTO_INCREMENT\s+PRIMARY\s+KEY/gi, 'SERIAL PRIMARY KEY')
+            .replace(/INT\s+NOT\s+NULL\s+AUTO_INCREMENT\s+PRIMARY\s+KEY/gi, 'SERIAL PRIMARY KEY')
             .replace(/INT\s+NOT\s+NULL\s+AUTO_INCREMENT/gi, 'SERIAL')
+            .replace(/AUTO_INCREMENT/g, '')
             .replace(/DATETIME/gi, 'TIMESTAMP')
-            .replace(/TINYINT\(1\)/gi, 'BOOLEAN');
+            .replace(/TINYINT\(1\)/gi, 'BOOLEAN')
+            .replace(/DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP/gi, 'DEFAULT CURRENT_TIMESTAMP');
+          
+          // Log the converted SQL command for debugging
+          console.log('Converted SQL command:', sqlCommand);
         }
         
         await pool.query(sqlCommand);
